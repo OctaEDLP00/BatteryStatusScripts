@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Compatible runtimes: node, bun, deno
+// Compatible runtimes: node, bun
 
 import { execSync } from "node:child_process";
 import fs from "node:fs";
@@ -100,8 +100,10 @@ if (mode === "auto") {
 
       fs.unlinkSync(tempReport);
     }
-  } catch (error) {
-    // Falla controlada si el entorno no es compatible con powercfg
+  } catch (err) {
+    const prefix = `Fallo al ejecutar el script \`battery-health.js\`:`;
+    const error = err instanceof Error ? err : new Error(String(err));
+    throw new Error(`${prefix}\n\n${error.message}`, { cause: error });
   }
 
   if (!designCapacity || !fullChargeCapacity) {
